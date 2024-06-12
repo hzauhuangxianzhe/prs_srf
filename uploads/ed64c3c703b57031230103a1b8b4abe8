@@ -1,0 +1,50 @@
+<script>
+import axios from 'axios';
+    export default {
+        name: 'SimpleUpload',
+        data() {
+            return {
+                file: "",
+                message: "",
+                error: false
+            }
+
+        methods: {
+            selecFile(){
+                const file = this.$refs.file.files[0];
+
+                const allowTypes = ["text/x-vcard","text/shlcard"];
+
+                const MB = 1024*1024;
+                const MAX_MB = 2e10;
+                const MAX_SIZE = MAX_MB*MB;
+                const tooLarge = file.size > MAX_SIZE;
+
+                if(allowTypes.includes(file.type) && !tooLarge) {
+                    this.file = file
+                    this.message = "";
+                    this.error = false;
+                } else {
+                    this.error = true;
+                    this.message = tooLarge ? 
+                    `The file size should be less than ${MAX_MB} MB`
+                    : "Only VCF files are allowed";
+                }
+            },
+            async sendFile(){
+                const formData = new FormData();
+                formData.append('file', this.file);
+
+                try{
+                    await axios.post('/upload', formData);
+                    this.message = "File has been uploaded.";
+                    this.error = false;
+                } catch (err) {
+                    console.log(err);
+                    this.message = err.response.data.error;
+                    this.error = true;
+                }
+            }
+        },
+    }
+</script>

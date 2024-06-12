@@ -1,26 +1,41 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div id="app">
+    <h1>Upload VCF File</h1>
+    <FileChecker @fileSelected="handleFileSelected" />
+    <FileUploader :file="selectedFile" @uploadSuccess="handleUploadSuccess" />
+    <FileDownloader :downloadLink="downloadLink" />
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import FileChecker from './components/FileChecker.vue';
+import FileUploader from './components/FileUploader.vue';
+import FileDownloader from './components/FileDownloader.vue';
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    FileChecker,
+    FileUploader,
+    FileDownloader
+  },
+  data() {
+    return {
+      selectedFile: null,
+      downloadLink: null
+    };
+  },
+  methods: {
+    handleFileSelected(file) {
+      this.selectedFile = file;
+    },
+    handleUploadSuccess(downloadLink) {
+      this.downloadLink = downloadLink;
+    }
   }
 }
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+<style scoped>
+/* Add your styles here */
 </style>
